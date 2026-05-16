@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,7 +82,7 @@
       body {
         padding: 1rem;
       }
-      
+
       .header h1 {
         font-size: 1.5rem;
       }
@@ -100,6 +101,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="container">
@@ -111,6 +113,13 @@
       <div class="card">
         <div class="card-title">Total Leads</div>
         <div class="card-value" id="total">0</div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-title">Leads por Asesor</div>
+        <div class="chart-wrapper">
+          <canvas id="chartAssignee"></canvas>
+        </div>
       </div>
 
       <div class="card chart-card">
@@ -186,7 +195,25 @@
 
     loadData();
     setInterval(loadData, 600000);
+
+
+
+
+    let chartAssignee;
+
+    chartAssignee = new Chart(document.getElementById("chartAssignee"), {
+      type: "bar",
+      data: {
+        labels: Object.keys(data.byAssignee),
+        datasets: [{
+          label: "Leads por asesor",
+          data: Object.values(data.byAssignee),
+          backgroundColor: "rgba(107, 100, 86, 0.6)"
+        }]
+      }
+    });
   </script>
 
 </body>
+
 </html>
