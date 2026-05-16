@@ -134,6 +134,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     let chart;
+    let chartAssignee;
 
     async function loadData() {
       try {
@@ -142,6 +143,7 @@
 
         document.getElementById("total").innerText = data.totalLeads;
 
+        // ---------------- STATUS CHART ----------------
         const ctx = document.getElementById("chart");
 
         if (chart) chart.destroy();
@@ -158,36 +160,26 @@
               borderWidth: 1,
               borderRadius: 6
             }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                grid: {
-                  color: 'rgba(212, 206, 195, 0.3)'
-                },
-                ticks: {
-                  color: '#8a8276'
-                }
-              },
-              x: {
-                grid: {
-                  display: false
-                },
-                ticks: {
-                  color: '#8a8276'
-                }
-              }
-            }
           }
         });
+
+        // ---------------- ASSIGNEE CHART ----------------
+        const ctx2 = document.getElementById("chartAssignee");
+
+        if (chartAssignee) chartAssignee.destroy();
+
+        chartAssignee = new Chart(ctx2, {
+          type: "bar",
+          data: {
+            labels: Object.keys(data.byAssignee || {}),
+            datasets: [{
+              label: "Leads por asesor",
+              data: Object.values(data.byAssignee || {}),
+              backgroundColor: "rgba(107, 100, 86, 0.6)"
+            }]
+          }
+        });
+
       } catch (error) {
         console.error('Error cargando datos:', error);
       }
@@ -195,23 +187,6 @@
 
     loadData();
     setInterval(loadData, 600000);
-
-
-
-
-    let chartAssignee;
-
-    chartAssignee = new Chart(document.getElementById("chartAssignee"), {
-      type: "bar",
-      data: {
-        labels: Object.keys(data.byAssignee),
-        datasets: [{
-          label: "Leads por asesor",
-          data: Object.values(data.byAssignee),
-          backgroundColor: "rgba(107, 100, 86, 0.6)"
-        }]
-      }
-    });
   </script>
 
 </body>
