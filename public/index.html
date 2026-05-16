@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kommo KPIs</title>
+</head>
+<body>
+
+  <h1>KPIs Kommo</h1>
+
+  <h2>Total Leads: <span id="total">0</span></h2>
+
+  <canvas id="chart"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("/api/kpis");
+      const data = await res.json();
+
+      document.getElementById("total").innerText = data.totalLeads;
+
+      const ctx = document.getElementById("chart");
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: Object.keys(data.byStatus),
+          datasets: [{
+            label: "Leads por estado",
+            data: Object.values(data.byStatus)
+          }]
+        }
+      });
+    }
+
+    loadData();
+
+    // refresh cada 10 min
+    setInterval(loadData, 600000);
+  </script>
+
+</body>
+</html>
