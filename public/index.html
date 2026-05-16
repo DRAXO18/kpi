@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Kommo KPIs</title>
 </head>
+
 <body>
 
   <h1>KPIs Kommo</h1>
@@ -14,15 +16,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
+    let chart;
+
     async function loadData() {
-      const res = await fetch("/api/kpis");
+      const res = await fetch("https://kpi-tau-five.vercel.app/api/kpis");
       const data = await res.json();
 
       document.getElementById("total").innerText = data.totalLeads;
 
       const ctx = document.getElementById("chart");
 
-      new Chart(ctx, {
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
         type: "bar",
         data: {
           labels: Object.keys(data.byStatus),
@@ -35,10 +41,9 @@
     }
 
     loadData();
-
-    // refresh cada 10 min
     setInterval(loadData, 600000);
   </script>
 
 </body>
+
 </html>

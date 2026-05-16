@@ -1,37 +1,39 @@
 export default async function handler(req, res) {
-  try {
-    const response = await fetch("https://TU_SUBDOMINIO.kommo.com/api/v4/leads", {
-      headers: {
-        Authorization: `Bearer ${process.env.KOMMO_TOKEN}`
+  const KOMMO_DOMAIN = "lsinmobiliariaperu";
+  const TOKEN = process.env.KOMMO_TOKEN;
+
+  let page = 1;
+  let allLeads = [];
+
+  while (true) {
+    const response = await fetch(
+      `https://${KOMMO_DOMAIN}.kommo.com/api/v4/leads?limit=250&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`
+        }
       }
-    });
+    );
 
     const data = await response.json();
-
     const leads = data._embedded?.leads || [];
 
-    // KPIs básicos
-    const total = leads.length;
+    allLeads = allLeads.concat(leads);
 
-    const porEstado = leads.reduce((acc, lead) => {
-      const status = lead.status_id || "unknown";
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    }, {});
+    if (!data._links?.next) break;
 
-    const porAsesor = leads.reduce((acc, lead) => {
-      const user = lead.responsible_user_id || "unknown";
-      acc[user] = (acc[user] || 0) + 1;
-      return acc;
-    }, {});
-
-    res.status(200).json({
-      totalLeads: total,
-      byStatus: porEstado,
-      byAdvisor: porAsesor
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching Kommo data" });
+    page++;
   }
+
+  const byStatus = {};
+
+  allLeads.forEach(l => {
+    const status = l.status_id || "unknown";
+    byStatus[status] = (byStatus[status] || 0) + 1;
+  });
+
+  res.json({
+    totalLeads: allLeads.length,
+    byStatus
+  });
 }

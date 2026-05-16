@@ -8,5 +8,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DRAXO18/kpi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DRAXO18/kpi/issues"
+  },
+  "homepage": "https://github.com/DRAXO18/kpi#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
 }
